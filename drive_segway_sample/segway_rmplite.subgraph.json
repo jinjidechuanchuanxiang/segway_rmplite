@@ -1,0 +1,97 @@
+{
+    "modules": [
+        "//apps/segway_rmplite/segwayrmp:segway_rmplite"
+    ],
+    "graph": {
+        "nodes": [
+            {
+                "name": "subgraph",
+                "components": [
+                    {
+                        "name": "message_ledger",
+                        "type": "isaac::alice::MessageLedger"
+                    },
+                    {
+                        "name": "interface",
+                        "type": "isaac::alice::Subgraph"
+                    }
+                ]
+            },           
+            {
+                "name": "segway_chassis",
+                "components": [
+                    {
+                        "name": "message_ledger",
+                        "type": "isaac::alice::MessageLedger"
+                    },
+                    {
+                        "name": "isaac.SegwayChassis",
+                        "type": "isaac::SegwayChassis"
+                    }
+                ]
+            }
+        ],
+        "edges": [
+            {
+                "source": "subgraph/interface/speed_cmd",
+                "target": "segway_chassis/isaac.SegwayChassis/speed_cmd"
+            },
+            {
+                "source": "subgraph/interface/drive_enable_cmd",
+                "target": "segway_chassis/isaac.SegwayChassis/drive_enable_cmd"
+            },
+            {
+                "source": "subgraph/interface/load_cmd",
+                "target": "segway_chassis/isaac.SegwayChassis/load_cmd"
+            },
+            {
+                "source": "subgraph/interface/poweroff_cmd",
+                "target": "segway_chassis/isaac.SegwayChassis/poweroff_cmd"
+            },
+            {
+                "source": "subgraph/interface/vel_limit_cmd",
+                "target": "segway_chassis/isaac.SegwayChassis/vel_limit_cmd"
+            },
+            {
+                "source": "subgraph/interface/remove_push_cmd",
+                "target": "segway_chassis/isaac.SegwayChassis/remove_push_cmd"
+            },
+            {
+                "source": "subgraph/interface/hang_cmd",
+                "target": "segway_chassis/isaac.SegwayChassis/hang_cmd"
+            },
+            {
+                "source":  "segway_chassis/isaac.SegwayChassis/speed_fb",
+                "target": "subgraph/interface/speed_fb"
+            },
+            {
+                "source":  "segway_chassis/isaac.SegwayChassis/ticks_fb",
+                "target": "subgraph/interface/ticks_fb"
+            },
+            {
+                "source":  "segway_chassis/isaac.SegwayChassis/event_fb",
+                "target": "subgraph/interface/event_fb"
+            },
+            {
+                "source":  "segway_chassis/isaac.SegwayChassis/odom_fb",
+                "target": "subgraph/interface/odom_fb"
+            },
+            {
+                "source":  "segway_chassis/isaac.SegwayChassis/imu_fb",
+                "target": "subgraph/interface/imu_fb"
+            },
+            {
+                "source":  "segway_chassis/isaac.SegwayChassis/set_limit_fb",
+                "target": "subgraph/interface/set_limit_fb"
+            },
+            {
+                "source":  "segway_chassis/isaac.SegwayChassis/info_fb",
+                "target": "subgraph/interface/info_fb"
+            },
+            {
+                "source":  "segway_chassis/isaac.SegwayChassis/segway_init_success",
+                "target": "subgraph/interface/segway_init_success"
+            }
+        ]
+    }
+}

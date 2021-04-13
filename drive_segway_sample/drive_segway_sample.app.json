@@ -1,0 +1,49 @@
+{
+    "name": "drive_segway_sample",
+    "modules": [
+        "//apps/segway_rmplite/drive_segway_sample:DriveSegway_component"
+    ],
+    "graph": {
+        "nodes": [
+            {
+                "name": "drive_segway",
+                "components": [
+                    {
+                        "name": "message_ledger",
+                        "type": "isaac::alice::MessageLedger"
+                    },
+                    {
+                        "name": "isaac.DriveSegway",
+                        "type": "isaac::DriveSegway"
+                    }
+                ]
+            },
+            {
+                "name": "segway_rmplite",
+                "subgraph": "apps/segway_rmplite/drive_segway_sample/segway_rmplite.subgraph.json" 
+            }
+        ], 
+        "edges": [
+            {
+                "source": "drive_segway/isaac.DriveSegway/speed_cmd",
+                "target": "segway_rmplite.subgraph/interface/speed_cmd"
+            }, 
+            {
+                "source": "drive_segway/isaac.DriveSegway/drive_enable_cmd",
+                "target": "segway_rmplite.subgraph/interface/drive_enable_cmd"
+            }, 
+            {
+                "source": "segway_rmplite.subgraph/interface/segway_init_success",
+                "target": "drive_segway/isaac.DriveSegway/segway_init_success"
+            }
+        ]
+    },
+    "config": {
+        "drive_segway" : {
+            "isaac.DriveSegway" : {
+                "tick_period" : "100Hz"
+            }
+        }
+    }
+}
+  
