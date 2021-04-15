@@ -13,8 +13,8 @@ namespace isaac {
   #define RMPVERSION0_7
   // #define RMPVERSION1_0
   #ifdef  RMPVERSION0_7
-  #define  LINESPEEDMPH2MPS     (1/3600)
-  #define  ANGULARSPEEDMPH2MPS     (1/1000)
+  #define  LINESPEEDMPH2MPS     (1/3600.0)
+  #define  ANGULARSPEEDMPH2MPS     (1/1000.0)
   #define  IMUACCROBOT2G    (9.8 / 4000.0)
   #define  IMUGYRROBOT2RADPS    (1 / 900.0)
   #endif
@@ -71,14 +71,15 @@ namespace isaac {
 
  void PubData(StampedBasicFrame_ *frame)
 {
-  for (uint8_t i = 0; i < sizeof(segway_data_tbl)/sizeof(segway_data_tbl[0]); i++)
+  uint8_t i = 0;
+  for (; i < sizeof(segway_data_tbl)/sizeof(segway_data_tbl[0]); i++)
   {
     if (frame->type_id == segway_data_tbl[i].typeId) break;
-    if (i < sizeof(segway_data_tbl)/sizeof(segway_data_tbl[0])){
-      *(segway_data_tbl[i].segwayTimeStamp) = frame->timestamp;
-      *(segway_data_tbl[i].updateFlag) =1;
-      memcpy( segway_data_tbl[i].dataPtr, frame->data,  segway_data_tbl[i].dataSize);
-    }
+  }
+  if (i < sizeof(segway_data_tbl)/sizeof(segway_data_tbl[0])){
+    *(segway_data_tbl[i].segwayTimeStamp) = frame->timestamp;
+    *(segway_data_tbl[i].updateFlag) =1;
+    memcpy( segway_data_tbl[i].dataPtr, frame->data,  segway_data_tbl[i].dataSize);
   }
 }
 
@@ -91,6 +92,7 @@ void EvnetPubData(int event_no)
 
 void SegwayChassis::start() {
   bool init_ok = true;
+  set_comu_interface(comu_serial);// Before calling init_control_ctrl, need to call this function to set whether the communication port is a serial port or a CAN port, "comu)serial":serial; "comu_can":CAN.
   if (init_control_ctrl() != 0)
   {
       LOG_ERROR("init_control_ctrl() fail!");

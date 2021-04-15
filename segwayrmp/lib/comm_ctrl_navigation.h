@@ -76,6 +76,11 @@ typedef enum {
     connect = 4 //v0.6无connect板卡
 }board_name_e;
 
+typedef enum {
+	comu_serial = 0,
+	comu_can = 1
+}comu_choice_e;
+
 typedef struct{
 	int16_t car_speed;//Vehicle linear speed
 	int16_t turn_speed;//Turning speed
@@ -158,6 +163,7 @@ void set_calib_chassis_gyro(void);//Calibrate chassis gyro
 int  init_control_ctrl(void);//Chassis initialization
 void exit_control_ctrl(void);//Chassis software finished running
 void set_smart_car_serial(const char * serial_no);//Set the serial port name
+void set_comu_interface(comu_choice_e comu_choice); //Set communication interface: 'comu_serial': serial port; 'comu_can': CAN port
 void set_chassis_load_state(int16_t newLoadSet);//Sets whether the chassis parameters are empty or full load, 0: no_load, 1: full_load
 void inform_route_poweroff(void);//Set two - wheel differential chassis shutdown
 void set_remove_push_cmd(void);//An order to remove the push status
