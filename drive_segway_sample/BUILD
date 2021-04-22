@@ -5,7 +5,7 @@ isaac_subgraph(
     modules = [
         "//apps/segway_rmplite/segwayrmp:segway_rmplite",
     ],
-    subgraph = ":segway_rmplite.subgraph.json",
+    subgraph = "segway_rmplite.subgraph.json",
     visibility = ["//visibility:public"],
 )
 

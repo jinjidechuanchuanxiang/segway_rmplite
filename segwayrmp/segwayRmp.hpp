@@ -16,9 +16,9 @@ class SegwayChassis : public isaac::alice::Codelet {
     void start() override;
     // Has whatever needs to be run repeatedly
     void tick() override;
+    void stop() override;
 
     ISAAC_PROTO_RX(StateProto, speed_cmd);
-    ISAAC_PROTO_RX(BooleanProto, drive_enable_cmd);
     ISAAC_PROTO_RX(BooleanProto, load_cmd);
     ISAAC_PROTO_RX(BooleanProto, poweroff_cmd);
     ISAAC_PROTO_RX(Vector3dProto , vel_limit_cmd);
@@ -40,12 +40,13 @@ private:
     double     pre_seconds;
     double     now_seconds;
     std::optional<int64_t> last_speed_cmd_time_;
-    std::optional<int64_t> last_enable_cmd_time_;
     std::optional<int64_t> last_load_cmd_time_;
     std::optional<int64_t> last_poweroff_cmd_time_;
     std::optional<int64_t> last_vel_limit_cmd_time_;
     std::optional<int64_t> last_remove_push_cmd_time_;
     std::optional<int64_t> last_hang_cmd_time_;
+    double lineV = 0.0;
+    double angularV = 0.0;
 };
 
 

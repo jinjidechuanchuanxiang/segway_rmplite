@@ -93,6 +93,10 @@ void EvnetPubData(int event_no)
 void SegwayChassis::start() {
   bool init_ok = true;
   set_comu_interface(comu_serial);// Before calling init_control_ctrl, need to call this function to set whether the communication port is a serial port or a CAN port, "comu)serial":serial; "comu_can":CAN.
+
+  // Necessary to enable GPIO Serial on Jetson AGX Xavier
+  set_smart_car_serial("ttyTHS0");
+
   if (init_control_ctrl() != 0)
   {
       LOG_ERROR("init_control_ctrl() fail!");
@@ -112,7 +116,10 @@ void SegwayChassis::start() {
   auto proto = tx_segway_init_success().initProto();
   proto.setFlag(init_ok);
   tx_segway_init_success().publish();
-  
+
+  // Enable chassis control as part of initialization process
+  // carter app does not have logic to enable chassis ctrl
+  set_enable_ctrl(1);
 }
 
 void SegwayChassis::tick() {
@@ -122,24 +129,16 @@ void SegwayChassis::tick() {
       messages::DifferentialBaseControl speed_command;
       ASSERT(FromProto(rx_speed_cmd().getProto(), rx_speed_cmd().buffers(), speed_command),
             "Failed to parse rx_speed_cmd");
-      double lineV = speed_command.linear_speed();
-      double angularV = speed_command.angular_speed();
-      set_cmd_vel(lineV, angularV);
+      lineV = speed_command.linear_speed();
+      angularV = speed_command.angular_speed();
       last_speed_cmd_time_ = time;
     }
   }
 
-  if (rx_drive_enable_cmd().available()){
-    const int64_t time = rx_drive_enable_cmd().acqtime();
-    if (!last_enable_cmd_time_ || time > *last_enable_cmd_time_) {
-      auto proto_enable_cmd = rx_drive_enable_cmd().getProto();
-      bool enable_f = proto_enable_cmd.getFlag();
-      uint16_t enable_flag  = ((enable_f == true) ? 1: 0);
-      LOG_WARNING("segway drive switch: %d", enable_flag);
-      set_enable_ctrl(enable_flag);
-      last_enable_cmd_time_ = time;
-    }
-  }
+  // Send command to chassis at every tick to maintain command frequency
+  // This is to avoid the chassis dropping back into Lock Mode
+  // speed_cmd is not guaranteed to have a constant frequency
+  set_cmd_vel(lineV, angularV);
 
   if (rx_load_cmd().available()){
     const int64_t time = rx_load_cmd().acqtime();
@@ -293,6 +292,11 @@ void SegwayChassis::tick() {
     ToProto(coefficients, proto_info_fb);
     pre_seconds = now_seconds + 1;
   }
+}
+
+void SegwayChassis::stop() {
+  set_enable_ctrl(0);
+  exit_control_ctrl();
 }
 
 }  // namespace isaac
