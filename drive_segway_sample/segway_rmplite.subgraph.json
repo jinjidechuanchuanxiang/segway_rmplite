@@ -93,5 +93,12 @@
                 "target": "subgraph/interface/segway_init_success"
             }
         ]
+    },
+    "config": {
+        "segway_chassis" : {
+            "isaac.SegwayChassis" : {
+                "tick_period" : "500Hz"
+            }
+        }
     }
 }

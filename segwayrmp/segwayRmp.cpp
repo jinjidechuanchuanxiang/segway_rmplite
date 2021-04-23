@@ -103,7 +103,7 @@ void SegwayChassis::start() {
       init_ok = false;
       return;
   }
-  tickBlocking();
+  tickPeriodically();
   timestamp_data.on_new_data = PubData;
   aprctrl_datastamped_jni_register(&timestamp_data);
 
