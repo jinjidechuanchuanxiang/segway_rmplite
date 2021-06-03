@@ -14,7 +14,7 @@ isaac_cc_library(
     name = "segway_chassis",
     srcs = select({
         "@com_nvidia_isaac_engine//engine/build:platform_x86_64": ["libctrl_x86_64.so"],
-        "@com_nvidia_isaac_engine//engine/build:platform_jetpack44": ["libctrl_arm64-v8a.so"],
+        "@com_nvidia_isaac_engine//engine/build:platform_jetpack45": ["libctrl_arm64-v8a.so"],
         }),
     hdrs = [
         ":comm_ctrl_navigation.h",
