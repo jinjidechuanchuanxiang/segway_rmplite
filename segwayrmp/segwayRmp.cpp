@@ -225,12 +225,18 @@ void SegwayChassis::tick() {
   }
   if (ImuGyr_update == 1 && ImuAcc_update == 1){
     auto proto_imu_fb = tx_imu_fb().initProto();
-    proto_imu_fb.setLinearAccelerationX((double)ImuAccData.acc[0] * IMUACCROBOT2G);
-    proto_imu_fb.setLinearAccelerationY((double)ImuAccData.acc[1] * IMUACCROBOT2G);
-    proto_imu_fb.setLinearAccelerationZ((double)ImuAccData.acc[2] * IMUACCROBOT2G);
-    proto_imu_fb.setAngularVelocityX ((double)ImuGyrData.gyr[0] * IMUGYRROBOT2RADPS);
-    proto_imu_fb.setAngularVelocityY((double)ImuGyrData.gyr[1] * IMUGYRROBOT2RADPS);
-    proto_imu_fb.setAngularVelocityZ((double)ImuGyrData.gyr[2] * IMUGYRROBOT2RADPS);
+    double acc_x = -(double)ImuAccData.acc[1] * IMUACCROBOT2G;
+    double acc_y = (double)ImuAccData.acc[0] * IMUACCROBOT2G;
+    double acc_z = (double)ImuAccData.acc[2] * IMUACCROBOT2G;
+    double gyr_x = -(double)ImuGyrData.gyr[1] * IMUGYRROBOT2RADPS;
+    double gyr_y = (double)ImuGyrData.gyr[0] * IMUGYRROBOT2RADPS;
+    double gyr_z = (double)ImuGyrData.gyr[2] * IMUGYRROBOT2RADPS;
+    proto_imu_fb.setLinearAccelerationX(acc_x);
+    proto_imu_fb.setLinearAccelerationY(acc_y);
+    proto_imu_fb.setLinearAccelerationZ(acc_z);
+    proto_imu_fb.setAngularVelocityX (gyr_x);
+    proto_imu_fb.setAngularVelocityY(gyr_y);
+    proto_imu_fb.setAngularVelocityZ(gyr_z);
     tx_imu_fb().publish(Imu_TimeStamp);
     ImuGyr_update = 0;
     ImuAcc_update = 0;
